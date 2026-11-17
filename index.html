@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>影像製作管理</title>
+<style>html,body{margin:0;height:100%;background:#f5f7f2;font:14px/1.6 sans-serif;color:#8a9382}#msg{position:fixed;inset:0;display:grid;place-items:center}iframe{position:fixed;inset:0;width:100%;height:100%;border:0}</style>
+</head>
+<body>
+<div id="msg">載入中…</div>
+<script>
+/* 系統的正式網址：之後如果重新建立部署而換了網址，只要改這一行 */
+var API = 'https://script.google.com/macros/s/AKfycbx209_4ax2xbiduFeaH01PQqVtsopACx8H6LIdirURiG9qhqYwOe6RWdVuqoLfHpDTt/exec';
+/* 直接向後台取網頁原始碼，不經過 Google 的登入狀態，所以瀏覽器同時登入多個 Google 帳號也能用。
+   後台還沒更新到支援這個方式時，退回用內嵌框開啟。 */
+function fallback(){ document.getElementById('msg').innerHTML = ''; var f = document.createElement('iframe'); f.src = API; document.body.appendChild(f); }
+fetch(API + '?raw=1', { credentials: 'omit', redirect: 'follow' })
+  .then(function(r){ return r.text(); })
+  .then(function(h){
+    if (h.indexOf('id="loading"') < 0 || h.indexOf('影像製作管理') < 0) return fallback();
+    window.PM_API = API;
+    h = h.replace('<head>', '<head><script>window.PM_API=' + JSON.stringify(API) + ';<\/script>');
+    document.open(); document.write(h); document.close();
+  })
+  .catch(fallback);
+</script>
+</body>
+</html>
